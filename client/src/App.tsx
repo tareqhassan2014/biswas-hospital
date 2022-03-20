@@ -1,7 +1,7 @@
-import { Typography } from '@mui/material';
+import TheLayout from './views/pages/TheLayout';
 
 function App() {
-    return <Typography>Biswas Hospital</Typography>;
+    return <TheLayout />;
 }
 
 export default App;
