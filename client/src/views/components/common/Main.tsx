@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 const Home = React.lazy(() => import('../../pages/home/Home'));
 const SignIn = React.lazy(() => import('../../pages/signIn/SignIn'));
 const SignUP = React.lazy(() => import('../../pages/signup/SignUp'));
+const Dashboard = React.lazy(() => import('../../pages/dashboard/Dashboard'));
 
 const Main = () => {
     return (
@@ -12,6 +13,7 @@ const Main = () => {
                 <Route path="/home" element={<Home />} />
                 <Route path="/login" element={<SignIn />} />
                 <Route path="/signup" element={<SignUP />} />
+                <Route path="/dashboard" element={<Dashboard />} />
             </Routes>
         </Suspense>
     );

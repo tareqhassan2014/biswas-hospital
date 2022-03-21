@@ -9,7 +9,7 @@ type AuthState = {
 
 const slice = createSlice({
     name: 'auth',
-    initialState: { user: null, token: null } as AuthState,
+    initialState: { user: null, token: null, status: 'idle' } as AuthState,
     reducers: {
         setCredentials: (
             state,
@@ -19,10 +19,17 @@ const slice = createSlice({
         ) => {
             state.user = user;
             state.token = token;
+            state.status = 'idle';
+        },
+
+        logOut: (state) => {
+            state.user = null;
+            state.token = null;
+            state.status = 'idle';
         },
     },
 });
 
-export const { setCredentials } = slice.actions;
+export const { setCredentials, logOut } = slice.actions;
 export default slice.reducer;
 export const selectCurrentUser = (state: RootState) => state.auth.user;

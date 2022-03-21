@@ -15,13 +15,14 @@ import {
     Typography,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { Link as DomLink } from 'react-router-dom';
+import { Link as DomLink, useNavigate } from 'react-router-dom';
 import { useSignUpMutation } from '../../../app/services/api';
 import { setCredentials } from '../../../features/auth/authSlice';
 import useFirebase from '../../../features/auth/firebase/useFirebase';
 
 export default function SignIn() {
     const dispatch = useDispatch();
+    let navigate = useNavigate();
     const { firebaseGoogle } = useFirebase();
     const [signUp, { data, isLoading }] = useSignUpMutation();
 
@@ -38,7 +39,7 @@ export default function SignIn() {
 
             dispatch(setCredentials({ user: data.data, token: data.token }));
 
-            console.log(data);
+            navigate('/');
         }
     };
 
