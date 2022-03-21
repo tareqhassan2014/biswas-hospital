@@ -37,7 +37,7 @@ export default function ButtonAppBar() {
                     </Typography>
 
                     {user ? (
-                        <Avatar alt={user.name} src={user.photo} />
+                        <Avatar alt={user.name} src={user.img} />
                     ) : (
                         <Button
                             color="inherit"

@@ -4,5 +4,5 @@ interface IUser {
     _id: string;
     role: string;
     status: string;
-    photo: string;
+    img: string;
 }

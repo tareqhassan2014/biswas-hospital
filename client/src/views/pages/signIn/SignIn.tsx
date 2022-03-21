@@ -1,8 +1,10 @@
+import GoogleIcon from '@mui/icons-material/Google';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
     Avatar,
     Box,
+    Button,
     Checkbox,
     Container,
     CssBaseline,
@@ -12,39 +14,33 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { Link as DomLink, useNavigate } from 'react-router-dom';
-import initFirebase from '../../../features/auth/firebase/firebase.init';
-import { useAppDispatch } from '../../../Hooks/store';
-
-interface ILoginFormData {
-    email: string;
-    password: string;
-}
-initFirebase();
-
-const auth = getAuth();
-
-const googleLogin = async () => {
-    try {
-        const provider = new GoogleAuthProvider();
-        const { user } = await signInWithPopup(auth, provider);
-        console.log(
-            {
-                name: user.displayName,
-                email: user.email,
-                photo: user.photoURL,
-            },
-            user
-        );
-    } catch (error) {
-        console.log(error);
-    }
-};
+import { useDispatch } from 'react-redux';
+import { Link as DomLink } from 'react-router-dom';
+import { useSignUpMutation } from '../../../app/services/api';
+import { setCredentials } from '../../../features/auth/authSlice';
+import useFirebase from '../../../features/auth/firebase/useFirebase';
 
 export default function SignIn() {
-    const dispatch = useAppDispatch();
-    let navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { firebaseGoogle } = useFirebase();
+    const [signUp, { data, isLoading }] = useSignUpMutation();
+
+    const googleSignup = async () => {
+        const user = await firebaseGoogle();
+
+        if (user?.displayName && user?.email) {
+            const data = await signUp({
+                name: user?.displayName,
+                email: user?.email,
+                phone: user?.phoneNumber ?? '+8801988781886',
+                img: user?.photoURL ?? 'https://i.ibb.co/dBQjP3N/profile.png',
+            }).unwrap();
+
+            dispatch(setCredentials({ user: data.data, token: data.token }));
+
+            console.log(data);
+        }
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -93,7 +89,7 @@ export default function SignIn() {
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
-                        onClick={() => googleLogin()}
+                        onClick={() => console.log('dispatch')}
                         loading={false}
                     >
                         Sign In
@@ -108,6 +104,19 @@ export default function SignIn() {
                             <DomLink to={'/signup'}>
                                 {"Don't have an account? Sign Up"}
                             </DomLink>
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item lg>
+                            <Button
+                                variant="outlined"
+                                startIcon={<GoogleIcon />}
+                                sx={{ py: 1, px: 20, my: 3 }}
+                                size="large"
+                                onClick={() => googleSignup()}
+                            >
+                                Google
+                            </Button>
                         </Grid>
                     </Grid>
                 </Box>

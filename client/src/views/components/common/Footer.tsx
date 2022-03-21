@@ -1,4 +1,4 @@
-import { Grid, Link, Typography } from '@mui/material';
+import { Box, Grid, Link, Typography } from '@mui/material';
 
 function Copyright(props: any) {
     return (
@@ -20,8 +20,8 @@ function Copyright(props: any) {
 
 const Footer = () => {
     return (
-        <>
-            <Grid container sx={{ height: 400, background: 'red' }}>
+        <Box sx={{ bgcolor: 'red', pb: 2, mt: 5 }}>
+            <Grid container sx={{ height: 300, background: 'red' }}>
                 <Grid item md={4} xs={12} sx={{ background: 'orange' }}>
                     item
                 </Grid>
@@ -32,8 +32,8 @@ const Footer = () => {
                     <div>item</div>
                 </Grid>
             </Grid>
-            <Copyright sx={{ mt: 8, mb: 4 }} />
-        </>
+            <Copyright sx={{ mt: 2 }} />
+        </Box>
     );
 };
 

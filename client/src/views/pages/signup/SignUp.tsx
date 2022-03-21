@@ -1,8 +1,10 @@
+import GoogleIcon from '@mui/icons-material/Google';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
     Avatar,
     Box,
+    Button,
     Checkbox,
     Container,
     CssBaseline,
@@ -10,19 +12,67 @@ import {
     Grid,
     Link,
     TextField,
-    Typography
+    Typography,
 } from '@mui/material';
-import { Link as DomLink, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../../../Hooks/store';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+import { Link as DomLink } from 'react-router-dom';
+import { useSignUpMutation } from '../../../app/services/api';
+import { setCredentials } from '../../../features/auth/authSlice';
+import useFirebase from '../../../features/auth/firebase/useFirebase';
 
-interface ILoginFormData {
+type Inputs = {
+    name: string;
     email: string;
-    password: string;
-}
+    password: number;
+};
 
 export default function SignUP() {
-    const dispatch = useAppDispatch();
-    let navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { firebaseGoogle } = useFirebase();
+    const [signUp, { data, isLoading }] = useSignUpMutation();
+    const [show, setShow] = useState(false);
+    const {
+        register,
+        handleSubmit,
+        watch,
+        resetField,
+        formState: { errors },
+        reset,
+    } = useForm<Inputs>();
+
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        const user = await signUp({
+            name: data.name,
+            email: data.email,
+            phone: '+8801988781886',
+            img: 'https://i.ibb.co/dBQjP3N/profile.png',
+        }).unwrap();
+
+        dispatch(setCredentials({ user: user.data, token: user.token }));
+
+        console.log(data);
+
+        reset();
+    };
+
+    const googleSignup = async () => {
+        const user = await firebaseGoogle();
+
+        if (user?.displayName && user?.email) {
+            const data = await signUp({
+                name: user?.displayName,
+                email: user?.email,
+                phone: user?.phoneNumber ?? '+8801988781886',
+                img: user?.photoURL ?? 'https://i.ibb.co/dBQjP3N/profile.png',
+            }).unwrap();
+
+            dispatch(setCredentials({ user: data.data, token: data.token }));
+
+            console.log(data);
+        }
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -39,32 +89,61 @@ export default function SignUP() {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Sign in
+                    Sign Up
                 </Typography>
-                <Box sx={{ mt: 1 }}>
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit(onSubmit)}
+                    noValidate
+                    sx={{ mt: 1 }}
+                >
                     <TextField
+                        error={Boolean(errors.name)}
+                        label={Boolean(errors.name) ? 'Error' : 'Name'}
+                        helperText={errors.name?.message}
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="name"
+                        autoFocus
+                        sx={{ mb: 2 }}
+                        {...register('name', {
+                            required: 'User must have a Name',
+                        })}
+                    />
+                    <TextField
+                        error={Boolean(errors.email)}
+                        label={
+                            Boolean(errors.email) ? 'Error' : 'Email Address'
+                        }
+                        helperText={errors.email?.message}
                         margin="normal"
                         required
                         fullWidth
                         id="email"
-                        label="Email Address"
-                        name="email"
                         autoComplete="email"
-                        autoFocus
+                        {...register('email', {
+                            required: 'Email is required',
+                        })}
                     />
                     <TextField
+                        error={Boolean(errors.password)}
+                        label={Boolean(errors.password) ? 'Error' : 'Password'}
+                        helperText={errors.password?.message}
                         margin="normal"
                         required
                         fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
+                        type={show ? 'text' : 'password'}
                         id="password"
                         autoComplete="current-password"
+                        {...register('password', {
+                            required: 'password is required',
+                        })}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
+                        label="Show password"
+                        onClick={() => setShow(!show)}
                     />
                     <LoadingButton
                         type="submit"
@@ -83,9 +162,22 @@ export default function SignUP() {
                             </Link>
                         </Grid>
                         <Grid item>
-                            <DomLink to={'/signup'}>
-                                {"Don't have an account? Sign Up"}
+                            <DomLink to={'/login'}>
+                                {'have an account? Log In'}
                             </DomLink>
+                        </Grid>
+                    </Grid>
+                    <Grid container>
+                        <Grid item lg>
+                            <Button
+                                variant="outlined"
+                                startIcon={<GoogleIcon />}
+                                sx={{ py: 1, px: 20, my: 3 }}
+                                size="large"
+                                onClick={() => googleSignup()}
+                            >
+                                Google
+                            </Button>
                         </Grid>
                     </Grid>
                 </Box>
