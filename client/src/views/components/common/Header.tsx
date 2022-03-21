@@ -27,9 +27,12 @@ const pages = [
         page: 'Contact',
         link: '/contact',
     },
+    {
+        page: 'Appointment',
+        link: '/appointment',
+    },
 ];
 
-// 'Home', 'Contact', 'Blog', 'Dashboard'
 const settings = [
     {
         page: 'Profile',

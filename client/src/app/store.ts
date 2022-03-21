@@ -16,11 +16,13 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from '../features/auth/authSlice';
+import dateSlice from '../features/date/dateSlice';
 import { api } from './services/api';
 
 const rootReducer = combineReducers({
     [api.reducerPath]: api.reducer,
     auth: authReducer,
+    date: dateSlice,
 });
 
 const persistConfig = {
