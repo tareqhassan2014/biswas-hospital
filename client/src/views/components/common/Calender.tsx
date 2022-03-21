@@ -17,7 +17,10 @@ const Calender = () => {
     };
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider
+            sx={{ background: 'transparent' }}
+            dateAdapter={AdapterDateFns}
+        >
             <StaticDatePicker<Date>
                 orientation="landscape"
                 openTo="day"

@@ -1,39 +1,55 @@
-import { Button, Grid, Typography } from '@mui/material';
+import { Button, Grid, Paper, Typography } from '@mui/material';
+import { useState } from 'react';
+import AppointmentModal from './AppointmentModal';
 
-interface ICart {
+interface IBooking {
     _id: number;
     name: string;
     time: string;
     space: number;
 }
 
-const AppointmentCart = ({ cart }: { cart: ICart }) => {
-    return (
-        <Grid
-            item
-            md={4}
-            sm={6}
-            xs={12}
-            sx={{ border: 1, borderColor: 'primary.main' }}
-        >
-            <Typography
-                align="center"
-                variant="h6"
-                sx={{ color: 'primary.main', fontWeight: 'bold' }}
-            >
-                {cart.name}
-            </Typography>
-            <Typography align="center" variant="h6" sx={{ fontWeight: 'bold' }}>
-                {cart.time}
-            </Typography>
-            <Typography align="center" sx={{ fontWeight: 'bold' }}>
-                {cart.space} SPACE AVAILABLE
-            </Typography>
+const AppointmentCart = ({ booking }: { booking: IBooking }) => {
+    const [openModal, setOpenModal] = useState(false);
+    const handleModal = () => setOpenModal(!openModal);
 
-            <Button variant="contained" sx={{ m: 'auto', display: 'block' }}>
-                Book Appointment
-            </Button>
-        </Grid>
+    return (
+        <>
+            <Grid item xs={12} sm={6} md={4}>
+                <Paper elevation={3} sx={{ py: 2 }}>
+                    <Typography
+                        align="center"
+                        variant="h6"
+                        sx={{ color: 'primary.main', fontWeight: 'bold' }}
+                    >
+                        {booking.name}
+                    </Typography>
+                    <Typography
+                        align="center"
+                        variant="h6"
+                        sx={{ fontWeight: 'bold' }}
+                    >
+                        {booking.time}
+                    </Typography>
+                    <Typography align="center" sx={{ fontSize: '13px' }}>
+                        {booking.space} SPACE AVAILABLE
+                    </Typography>
+
+                    <Button
+                        variant="contained"
+                        sx={{ mx: 'auto', my: 2, display: 'block' }}
+                        onClick={handleModal}
+                    >
+                        Book Appointment
+                    </Button>
+                </Paper>
+            </Grid>
+            <AppointmentModal
+                open={openModal}
+                handleModal={handleModal}
+                booking={booking}
+            />
+        </>
     );
 };
 

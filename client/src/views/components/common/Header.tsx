@@ -15,6 +15,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { MouseEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import logo from '../../../assets/image/favicon.png';
 import { logOut } from '../../../features/auth/authSlice';
 import { useAuth } from '../../../Hooks/useAuth';
 
@@ -79,14 +80,15 @@ export default function ButtonAppBar() {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+                    <Box
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'none', md: 'flex' },
+                            width: '30px',
+                        }}
                     >
-                        LOGO
-                    </Typography>
+                        <img src={logo} alt="logo" style={{ width: '100%' }} />
+                    </Box>
 
                     <Box
                         sx={{
@@ -137,17 +139,7 @@ export default function ButtonAppBar() {
                             ))}
                         </Menu>
                     </Box>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="div"
-                        sx={{
-                            flexGrow: 1,
-                            display: { xs: 'flex', md: 'none' },
-                        }}
-                    >
-                        LOGO
-                    </Typography>
+
                     <Box
                         sx={{
                             flexGrow: 1,
