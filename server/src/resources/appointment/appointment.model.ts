@@ -32,6 +32,7 @@ const UserModel = new Schema(
             default: 'pending',
             enum: ['pending', 'approve', 'canceled'],
         },
+        date: Date,
     },
     { timestamps: true }
 );

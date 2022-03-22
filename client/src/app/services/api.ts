@@ -12,6 +12,15 @@ interface signUpResponse {
     data: IUser;
 }
 
+interface AppointmentRequest {
+    name: string;
+    email: string;
+    time: string;
+    phone: string;
+    user: string;
+    date: Date;
+}
+
 const baseUrl = 'https://biswas-hospital.herokuapp.com/api/v1';
 
 export const api = createApi({
@@ -31,7 +40,30 @@ export const api = createApi({
                 body: credentials,
             }),
         }),
+
+        getAppointmentByEmail: builder.mutation<signUpResponse[], string>({
+            query: (email) => ({
+                url: `/appointment/user/${email}`,
+                method: 'GET',
+            }),
+        }),
+
+        createAppointment: builder.mutation<
+            AppointmentRequest,
+            AppointmentRequest
+        >({
+            query: (body) => ({
+                url: '/appointment',
+                method: 'POST',
+                body: body,
+            }),
+        }),
     }),
 });
 
-export const { useLoginMutation, useSignUpMutation } = api;
+export const {
+    useLoginMutation,
+    useSignUpMutation,
+    useCreateAppointmentMutation,
+    useGetAppointmentByEmailMutation,
+} = api;

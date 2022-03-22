@@ -3,17 +3,19 @@ import {
     createAppointment,
     deleteAppointment,
     getAllAppointments,
-    getAppointmentByID,
+    getAppointmentByEmail,
     updateAppointment,
 } from './appointment.controller';
 
 const appointmentRouter = Router();
 
-appointmentRouter.route('/').get(getAllAppointments).post(createAppointment);
+appointmentRouter.route('/user/:email').get(getAppointmentByEmail);
 
 appointmentRouter
     .route('/:id')
-    .get(getAppointmentByID)
     .patch(updateAppointment)
     .delete(deleteAppointment);
+
+appointmentRouter.route('/').get(getAllAppointments).post(createAppointment);
+
 export default appointmentRouter;

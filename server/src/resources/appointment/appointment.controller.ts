@@ -50,10 +50,16 @@ export const updateAppointment = async (req: Request, res: Response) => {
     }
 };
 
-export const getAppointmentByID = async (req: Request, res: Response) => {
+export const getAppointmentByEmail = async (req: Request, res: Response) => {
     try {
-        const Appointment = await AppointmentModel.findById(req.params.id);
-        res.status(201).json(responseGenerator(Appointment, '', false));
+        const Appointment = await AppointmentModel.find({
+            email: req.params.email,
+        });
+        console.log({
+            email: req.params.email,
+        });
+
+        res.status(200).json(responseGenerator(Appointment, '', false));
     } catch (error: any) {
         return res
             .status(500)
@@ -82,7 +88,7 @@ export const deleteAppointment = async (req: Request, res: Response) => {
 
 export default {
     deleteAppointment,
-    getAppointmentByID,
+    getAppointmentByEmail,
     updateAppointment,
     createAppointment,
     getAllAppointments,

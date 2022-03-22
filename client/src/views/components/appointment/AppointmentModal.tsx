@@ -5,8 +5,10 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { useCreateAppointmentMutation } from '../../../app/services/api';
 import { useAuth } from '../../../Hooks/useAuth';
+import { useDate } from '../../../Hooks/useDate';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -38,6 +40,7 @@ type Inputs = {
     email: string;
     time: string;
     phone: string;
+    date: Date;
 };
 
 export default function AppointmentModal({
@@ -45,8 +48,10 @@ export default function AppointmentModal({
     handleModal,
     booking,
 }: IProps) {
-    const dispatch = useDispatch();
+    const [createAppointment, { isSuccess, isError }] =
+        useCreateAppointmentMutation();
     const { user } = useAuth();
+    const { date } = useDate();
 
     const {
         register,
@@ -56,10 +61,20 @@ export default function AppointmentModal({
     } = useForm<Inputs>();
 
     const onSubmit: SubmitHandler<Inputs> = async (data) => {
-        console.log(data);
-
-        reset();
+        try {
+            if (user) {
+                console.log({ ...data, user: user.id });
+                await createAppointment({ ...data, user: user.id }).unwrap();
+            }
+            reset();
+            handleModal();
+        } catch (error: any) {
+            toast.error(error.message);
+        }
     };
+
+    isError && toast.error('Something went wrong!');
+    isSuccess && toast.success('Successfully add an appointment');
 
     return (
         <Modal
@@ -98,12 +113,14 @@ export default function AppointmentModal({
                         margin="normal"
                         fullWidth
                         id="name"
+                        label="Name"
                         value={user?.name}
                         sx={{ mb: 2 }}
                         {...register('name')}
                     />
                     <TextField
                         value={user?.email}
+                        label="Email"
                         margin="normal"
                         fullWidth
                         id="email"
@@ -122,6 +139,16 @@ export default function AppointmentModal({
                         {...register('phone', {
                             required: 'Phone number is required',
                         })}
+                    />
+
+                    <TextField
+                        value={new Date(date).toLocaleDateString()}
+                        margin="normal"
+                        label="Date"
+                        fullWidth
+                        id="date"
+                        autoComplete="date"
+                        {...register('date')}
                     />
 
                     <LoadingButton

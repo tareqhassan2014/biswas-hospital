@@ -7,4 +7,5 @@ export default interface IAppointment extends Document {
     phone: string;
     user: Schema.Types.ObjectId;
     status: string;
+    date: Date;
 }

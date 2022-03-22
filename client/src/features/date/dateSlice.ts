@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
 type DateState = {
-    date: string | null;
+    date: string;
 };
 
 const today = new Date().toISOString();
