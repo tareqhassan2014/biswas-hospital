@@ -51,7 +51,7 @@ const AvailableAppointment = () => {
                 sx={{ color: 'primary.main', fontWeight: 'bold', mb: 6 }}
                 gutterBottom
             >
-                Available Appointment on {date && new Date(date).toDateString()}
+                Available Appointment on {new Date(date).toDateString()}
             </Typography>
 
             <Grid container spacing={{ xs: 2, md: 3 }}>

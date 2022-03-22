@@ -2,14 +2,23 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
 type AuthState = {
-    user: IUser | null;
+    user: IUser;
     token: string | null;
     status: 'idle' | 'loading' | 'failed';
 };
 
+const user = {
+    name: '',
+    email: '',
+    id: '',
+    role: '',
+    status: '',
+    img: '',
+};
+
 const slice = createSlice({
     name: 'auth',
-    initialState: { user: null, token: null, status: 'idle' } as AuthState,
+    initialState: { user, token: null, status: 'idle' } as AuthState,
     reducers: {
         setCredentials: (
             state,
@@ -23,7 +32,7 @@ const slice = createSlice({
         },
 
         logOut: (state) => {
-            state.user = null;
+            state.user = user;
             state.token = null;
             state.status = 'idle';
         },

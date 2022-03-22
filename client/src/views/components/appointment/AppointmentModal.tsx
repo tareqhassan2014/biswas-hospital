@@ -73,9 +73,6 @@ export default function AppointmentModal({
         }
     };
 
-    isError && toast.error('Something went wrong!');
-    isSuccess && toast.success('Successfully add an appointment');
-
     return (
         <Modal
             open={open}
@@ -114,12 +111,12 @@ export default function AppointmentModal({
                         fullWidth
                         id="name"
                         label="Name"
-                        value={user?.name}
+                        defaultValue={user?.name}
                         sx={{ mb: 2 }}
                         {...register('name')}
                     />
                     <TextField
-                        value={user?.email}
+                        defaultValue={user?.email}
                         label="Email"
                         margin="normal"
                         fullWidth

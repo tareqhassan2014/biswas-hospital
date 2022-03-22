@@ -6,6 +6,10 @@ interface signUpRequest {
     email: string;
     img: string;
 }
+interface LoginRequest {
+    email: string;
+    password: string;
+}
 
 interface signUpResponse {
     token: string;
@@ -21,12 +25,29 @@ interface AppointmentRequest {
     date: Date;
 }
 
+interface IAppointment {
+    date: string;
+    email: string;
+    name: string;
+    phone: string;
+    status: string;
+    time: string;
+    updatedAt: string;
+    user: string;
+    _id: string;
+}
+
+interface getAppointmentResponse {
+    data: IAppointment[];
+}
+
 const baseUrl = 'https://biswas-hospital.herokuapp.com/api/v1';
 
 export const api = createApi({
     baseQuery: fetchBaseQuery({ baseUrl }),
+    tagTypes: ['appointment'],
     endpoints: (builder) => ({
-        login: builder.mutation<signUpResponse, string>({
+        login: builder.mutation<signUpResponse, LoginRequest>({
             query: (credentials) => ({
                 url: '/auth/login',
                 method: 'POST',
@@ -41,11 +62,12 @@ export const api = createApi({
             }),
         }),
 
-        getAppointmentByEmail: builder.mutation<signUpResponse[], string>({
-            query: (email) => ({
-                url: `/appointment/user/${email}`,
+        getAppointmentByEmail: builder.query<getAppointmentResponse, string>({
+            query: (query) => ({
+                url: `/appointment${query}`,
                 method: 'GET',
             }),
+            providesTags: ['appointment'],
         }),
 
         createAppointment: builder.mutation<
@@ -57,6 +79,7 @@ export const api = createApi({
                 method: 'POST',
                 body: body,
             }),
+            invalidatesTags: ['appointment'],
         }),
     }),
 });
@@ -65,5 +88,5 @@ export const {
     useLoginMutation,
     useSignUpMutation,
     useCreateAppointmentMutation,
-    useGetAppointmentByEmailMutation,
+    useGetAppointmentByEmailQuery,
 } = api;

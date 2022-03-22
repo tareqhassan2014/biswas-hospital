@@ -4,14 +4,14 @@ import {
     Avatar,
     Box,
     Button,
+    Container,
     IconButton,
+    Menu,
+    MenuItem,
     Toolbar,
+    Tooltip,
     Typography,
 } from '@mui/material';
-import Container from '@mui/material/Container';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Tooltip from '@mui/material/Tooltip';
 import { MouseEvent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -161,7 +161,7 @@ export default function ButtonAppBar() {
                     </Box>
 
                     <Box sx={{ flexGrow: 0 }}>
-                        {user ? (
+                        {user.email ? (
                             <Tooltip title="Open settings">
                                 <IconButton
                                     onClick={handleOpenUserMenu}
@@ -203,7 +203,6 @@ export default function ButtonAppBar() {
 
                                         if (setting.page === 'Logout') {
                                             dispatch(logOut());
-                                            console.log('logout');
                                         }
                                     }}
                                 >

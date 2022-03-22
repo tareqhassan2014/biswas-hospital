@@ -14,17 +14,47 @@ import {
     TextField,
     Typography,
 } from '@mui/material';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { Link as DomLink, useNavigate } from 'react-router-dom';
-import { useSignUpMutation } from '../../../app/services/api';
+import { toast } from 'react-toastify';
+import { useLoginMutation, useSignUpMutation } from '../../../app/services/api';
 import { setCredentials } from '../../../features/auth/authSlice';
 import useFirebase from '../../../features/auth/firebase/useFirebase';
+
+type Inputs = {
+    email: string;
+    password: string;
+};
 
 export default function SignIn() {
     const dispatch = useDispatch();
     let navigate = useNavigate();
     const { firebaseGoogle } = useFirebase();
     const [signUp, { data, isLoading }] = useSignUpMutation();
+    const [login] = useLoginMutation();
+
+    const [show, setShow] = useState(false);
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+    } = useForm<Inputs>();
+
+    const onSubmit: SubmitHandler<Inputs> = async (data) => {
+        try {
+            toast.info('Waiting for response');
+            const user = await login(data).unwrap();
+            toast.success('successfully login');
+            dispatch(setCredentials({ user: user.data, token: user.token }));
+            reset();
+            navigate('/');
+        } catch (error) {
+            toast.warning('Something went wrong.');
+        }
+    };
 
     const googleSignup = async () => {
         const user = await firebaseGoogle();
@@ -58,39 +88,53 @@ export default function SignIn() {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Sign in
+                    Sign In
                 </Typography>
-                <Box sx={{ mt: 1 }}>
+                <Box
+                    component="form"
+                    onSubmit={handleSubmit(onSubmit)}
+                    noValidate
+                    sx={{ mt: 1 }}
+                >
                     <TextField
+                        error={Boolean(errors.email)}
+                        label={
+                            Boolean(errors.email) ? 'Error' : 'Email Address'
+                        }
+                        helperText={errors.email?.message}
                         margin="normal"
                         required
                         fullWidth
                         id="email"
-                        label="Email Address"
-                        name="email"
                         autoComplete="email"
-                        autoFocus
+                        {...register('email', {
+                            required: 'Email is required',
+                        })}
                     />
                     <TextField
+                        error={Boolean(errors.password)}
+                        label={Boolean(errors.password) ? 'Error' : 'Password'}
+                        helperText={errors.password?.message}
                         margin="normal"
                         required
                         fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
+                        type={show ? 'text' : 'password'}
                         id="password"
                         autoComplete="current-password"
+                        {...register('password', {
+                            required: 'password is required',
+                        })}
                     />
                     <FormControlLabel
                         control={<Checkbox value="remember" color="primary" />}
-                        label="Remember me"
+                        label="Show password"
+                        onClick={() => setShow(!show)}
                     />
                     <LoadingButton
                         type="submit"
                         fullWidth
                         variant="contained"
                         sx={{ mt: 3, mb: 2 }}
-                        onClick={() => console.log('dispatch')}
                         loading={false}
                     >
                         Sign In
@@ -103,7 +147,7 @@ export default function SignIn() {
                         </Grid>
                         <Grid item>
                             <DomLink to={'/signup'}>
-                                {"Don't have an account? Sign Up"}
+                                {'New here? Sign UP'}
                             </DomLink>
                         </Grid>
                     </Grid>

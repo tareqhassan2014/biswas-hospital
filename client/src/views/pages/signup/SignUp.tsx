@@ -17,7 +17,7 @@ import {
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
-import { Link as DomLink } from 'react-router-dom';
+import { Link as DomLink, useNavigate } from 'react-router-dom';
 import { useSignUpMutation } from '../../../app/services/api';
 import { setCredentials } from '../../../features/auth/authSlice';
 import useFirebase from '../../../features/auth/firebase/useFirebase';
@@ -29,15 +29,15 @@ type Inputs = {
 };
 
 export default function SignUP() {
+    let navigate = useNavigate();
     const dispatch = useDispatch();
     const { firebaseGoogle } = useFirebase();
-    const [signUp, { data, isLoading }] = useSignUpMutation();
+    const [signUp] = useSignUpMutation();
     const [show, setShow] = useState(false);
     const {
         register,
         handleSubmit,
-        watch,
-        resetField,
+
         formState: { errors },
         reset,
     } = useForm<Inputs>();
@@ -52,9 +52,8 @@ export default function SignUP() {
 
         dispatch(setCredentials({ user: user.data, token: user.token }));
 
-        console.log(data);
-
         reset();
+        navigate('/');
     };
 
     const googleSignup = async () => {
@@ -70,7 +69,7 @@ export default function SignUP() {
 
             dispatch(setCredentials({ user: data.data, token: data.token }));
 
-            console.log(data);
+            navigate('/');
         }
     };
 

@@ -55,9 +55,6 @@ export const getAppointmentByEmail = async (req: Request, res: Response) => {
         const Appointment = await AppointmentModel.find({
             email: req.params.email,
         });
-        console.log({
-            email: req.params.email,
-        });
 
         res.status(200).json(responseGenerator(Appointment, '', false));
     } catch (error: any) {
