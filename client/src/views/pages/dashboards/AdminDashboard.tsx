@@ -217,6 +217,6 @@ function DashboardContent() {
     );
 }
 
-export default function Dashboard() {
+export default function AdminDashboard() {
     return <DashboardContent />;
 }
